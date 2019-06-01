@@ -1,8 +1,17 @@
 'use strict';
 
+/**
+ * Loads environment variables from .env file into process.env
+ */
+require('dotenv').config();
+
 const express = require('express');
+
 const app = express();
 
-app.listen(3333, function () {
-  console.log('App listening on port 3000!');
+
+const port = process.env.PORT;
+
+app.listen(port, function () {
+  console.log(`App listening on ${port}!`);
 });
