@@ -7,6 +7,7 @@ require('dotenv').config();
 
 const bodyParser = require('body-parser');
 const express = require('express');
+const routers = require('./webserver/routes');
 const mysqlPool = require('./database/mysql-pool');
 
 const app = express();
@@ -44,6 +45,12 @@ app.use((req, res, next) => {
   res.header('Access-Control-Expose-Headers', accessControlAllowHeaders.join(','));
   next();
 });
+
+/**
+ *  Endpoints
+ */
+
+app.use('/api', routers.createAccountController);
 
 /**
  *  Port variable configured for deploy
