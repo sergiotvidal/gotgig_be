@@ -50,7 +50,7 @@ app.use((req, res, next) => {
  *  Endpoints
  */
 
-app.use('/api', routers.createAccountController);
+app.use('/api', routers.accountRouter);
 
 /**
  *  Port variable configured for deploy

@@ -1,7 +1,7 @@
 'use strict';
 
-const createAccountController = require('./register-router');
+const accountRouter = require('./account-router');
 
 module.exports = {
-  createAccountController,
+  accountRouter,
 };

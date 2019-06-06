@@ -4,7 +4,7 @@ const Joi = require('@hapi/joi');
 const bcrypt = require('bcrypt');
 const uuidV4 = require('uuid/v4');
 const sendgridMail = require('@sendgrid/mail');
-const mySqlPool = require('../../database/mysql-pool');
+const mySqlPool = require('../../../database/mysql-pool');
 
 sendgridMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -31,7 +31,7 @@ async function addVerificationCode(uuid) {
 }
 
 async function registrationEmailSender(userEmail, verificationCode) {
-  const activationURL = `http://localhost:3333/api/account/activate?verification_code=${verificationCode}`;
+  const activationURL = `http://localhost:3005/api/account/activate?verification_code=${verificationCode}`;
   const msg = {
     to: userEmail,
     from: {
@@ -48,7 +48,7 @@ async function registrationEmailSender(userEmail, verificationCode) {
   return data;
 }
 
-async function createAccount(req, res, next) {
+async function createAccount(req, res) {
   const accountData = req.body;
 
   try {
