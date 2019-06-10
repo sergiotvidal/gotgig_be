@@ -3,7 +3,6 @@
 'use strict';
 
 const Joi = require('@hapi/joi');
-// const axios = require('axios');
 const googleMapsClient = require('@google/maps').createClient({
   key: process.env.GOOGLEMAPS_API_KEY,
   Promise,
@@ -29,42 +28,8 @@ async function getCoordinatesFromGoogleMaps(concerthallAddress) {
     lng,
   };
 
-
   return coordinates;
-
-  // const connection = mySqlPool.getConnection();
-  // const insertCoordinatesQuery = `UPDATE localhalls SET ? WHERE address = '${concerthallAddress}'`;
-
-  // await connection.query(insertCoordinatesQuery, {
-  //   lat,
-  //   lng,
-  // });
-  // connection.release();
 }
-
-// function getCoordinatesFromGoogleMaps(concerthallAddress) {
-//   googleMapsClient.geocode({
-//     address: concerthallAddress,
-//   }).asPromise().then((response) => {
-//     return response.json.results[0].geometry.location;
-//   }).catch((err) => {
-//     return err;
-//   });
-// }
-
-
-// function getCoordinatesFromGoogleMaps(concertHallAddress) {
-//   const formattedAddress = concertHallAddress.split(' ').join('+');
-
-//   axios({
-//     method: 'GET',
-//     url: `https://maps.googleapis.com/maps/api/geocode/json?address=${formattedAddress}&key=${process.env.GOOGLEMAPS_API_KEY}`,
-//   }).then((response) => {
-//     return response.data;
-//   }).catch((err) => {
-//     return console.error('error', err);
-//   });
-// }
 
 async function createConcerthall(req, res) {
   const concertHallData = { ...req.body };
