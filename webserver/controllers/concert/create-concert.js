@@ -2,31 +2,62 @@
 
 const Joi = require('@hapi/joi');
 const mySqlPool = require('../../../database/mysql-pool');
+const insertBandIntoDatabase = require('../band/add-band-to-database');
+const getBandDataFromDatabase = require('../band/get-band-data-from-database');
 
 async function concertDataValidator(payload) {
   const schema = {
-    band: Joi.string().require(),
-    date: Joi.date().require(),
-    time: Joi.string().require(),
+    band: Joi.string().required(),
+    date: Joi.required(),
+    hour: Joi.string().required(),
+    style: Joi.string(),
+    website: Joi.string(),
+    description: Joi.string(),
   };
 
   return Joi.validate(payload, schema);
 }
 
-async function addConcertToDatabase(req, res) {
+async function createConcert(req, res) {
   const concertData = { ...req.body };
-  const { uuid } = req.claims;
   const { id_concerthall: idConcerthall } = req.params;
 
   try {
     await concertDataValidator(concertData);
   } catch (e) {
-    return res.status(400).send(e.message);
+    return res.status(401).send(e.message);
   }
 
   const connection = await mySqlPool.getConnection();
-  const insertConcert = '';
+  const insertConcert = 'INSERT INTO concerts SET ?';
+  const isBandAlreadyInDatabaseQuery = `SELECT * FROM bands WHERE full_name = '${concertData.band}'`;
 
+  try {
+    const [isBandAlreadyInDatabase] = await connection.query(isBandAlreadyInDatabaseQuery);
+
+    if (isBandAlreadyInDatabase.length === 0) {
+      await insertBandIntoDatabase(concertData);
+    }
+
+    const idBand = await getBandDataFromDatabase(concertData.band);
+
+    await connection.query(insertConcert, {
+      id_localhall: idConcerthall,
+      id_band: idBand,
+      date: concertData.date,
+      hour: concertData.hour,
+    });
+
+    connection.release();
+
+    return res.status(201).send(`${idBand}`);
+  } catch (e) {
+    if (connection) {
+      connection.release();
+    }
+
+    return res.status(500).send(e.message);
+  }
 }
 
-module.exports = addConcertToDatabase;
+module.exports = createConcert;
