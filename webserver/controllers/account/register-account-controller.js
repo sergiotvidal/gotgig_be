@@ -10,7 +10,7 @@ sendgridMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 function validateSchema(payload) {
   const schema = {
-    fullName: Joi.string(),
+    full_name: Joi.string(),
     email: Joi.string().email({ minDomainSegments: 2 }).required(),
     password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required(),
   };
@@ -64,15 +64,23 @@ async function createAccount(req, res) {
 
   const connection = await mySqlPool.getConnection();
 
+  const getEmailQuery = `SELECT * FROM organizations where email = '${accountData.email}'`;
+
   const createAccountQuery = 'INSERT INTO organizations SET ?';
 
   try {
+    const [emailCheckResult] = await connection.query(getEmailQuery);
+
+    if (emailCheckResult.length !== 0) {
+      return res.status(400).send('Email already exists in database');
+    }
+
     const result = await connection.query(createAccountQuery, {
       uuid,
       email: accountData.email,
       password: securePassword,
       created_at: creationDateFormatted,
-      full_name: accountData.fullName,
+      full_name: accountData.full_name,
     });
     connection.release();
 
