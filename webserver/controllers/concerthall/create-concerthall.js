@@ -44,11 +44,20 @@ async function createConcerthall(req, res) {
   const connection = await mySqlPool.getConnection();
   const createConcerthallQuery = 'INSERT INTO localhalls SET ?';
   const idOrganizationQuery = `SELECT id_organization FROM organizations WHERE uuid = '${uuid}'`;
+  const addressAlreadyInDatabaseQuery = `SELECT address FROM localhalls WHERE address = '${concertHallData.address}'`;
 
   try {
+    const [addresses] = await connection.query(addressAlreadyInDatabaseQuery);
+
+    if (addresses.length !== 0) {
+      return res.status(409).send('Address already in database');
+    }
+
     const [idOrganizationResult] = await connection.query(idOrganizationQuery);
 
     const idOrganization = idOrganizationResult[0].id_organization;
+
+
     const location = await getCoordinatesFromGoogleMaps(concertHallData.address);
     const { lat, lng } = location;
 

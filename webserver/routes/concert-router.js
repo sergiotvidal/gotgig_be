@@ -6,8 +6,8 @@ const jwtCheck = require('../session/check-bearer-token');
 
 const router = express.Router();
 
-router.post('/concert', jwtCheck, concertController.addConcert);
-router.delete('/concert', jwtCheck, concertController.deleteConcert);
-router.put('/concert', jwtCheck, concertController.updateConcert);
+router.post('user/concert/:id_concerthall', jwtCheck, concertController.addConcert);
+router.put('user/concert/:id_concerthall/:id_concert', jwtCheck, concertController.updateConcert);
+router.delete('user/concert/:id_concerthall/:id_concert', jwtCheck, concertController.deleteConcert);
 
 module.exports = router;

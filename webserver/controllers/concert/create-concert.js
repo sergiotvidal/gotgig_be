@@ -8,9 +8,6 @@ async function concertDataValidator(payload) {
     band: Joi.string().require(),
     date: Joi.date().require(),
     time: Joi.string().require(),
-    /** 
-     *TODO:check lo que viene del front
-     */
   };
 
   return Joi.validate(payload, schema);
@@ -18,8 +15,8 @@ async function concertDataValidator(payload) {
 
 async function addConcertToDatabase(req, res) {
   const concertData = { ...req.body };
-  const { claims } = req;
-  const { uuid } = claims;
+  const { uuid } = req.claims;
+  const { id_concerthall: idConcerthall } = req.params;
 
   try {
     await concertDataValidator(concertData);
@@ -27,9 +24,8 @@ async function addConcertToDatabase(req, res) {
     return res.status(400).send(e.message);
   }
 
- /**
-  * TODO: Hacer la query 
-  */
+  const connection = await mySqlPool.getConnection();
+  const insertConcert = '';
 
 }
 
