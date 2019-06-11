@@ -10,10 +10,16 @@ async function concertDataValidator(payload) {
     band: Joi.string().required(),
     date: Joi.required(),
     hour: Joi.string().required(),
+    tickets: Joi.string(),
     style: Joi.string(),
     website: Joi.string(),
     description: Joi.string(),
   };
+  /**
+   * TODO: definir el formato de .date(),
+   * ¿qué me traigo del front?
+   * ¿En qué formato me viene de front, en qué formato la convierto para almacenarla?
+   */
 
   return Joi.validate(payload, schema);
 }
@@ -50,7 +56,7 @@ async function createConcert(req, res) {
 
     connection.release();
 
-    return res.status(201).send(`${idBand}`);
+    return res.status(201).send();
   } catch (e) {
     if (connection) {
       connection.release();

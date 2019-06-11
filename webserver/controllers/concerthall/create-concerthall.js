@@ -13,6 +13,9 @@ async function validateData(payload) {
   const schema = {
     address: Joi.string().required(),
     full_name: Joi.string().required(),
+    description: Joi.string(),
+    website: Joi.string(),
+    phone_number: Joi.string(),
   };
 
   return Joi.validate(payload, schema);
