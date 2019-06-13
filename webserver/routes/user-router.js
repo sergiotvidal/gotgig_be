@@ -9,6 +9,8 @@ const router = express.Router();
 const upload = multer();
 
 router.post('/user/avatar', jwtCheck, upload.single('avatar'), userController.updateUserAvatar);
-router.get('/user', jwtCheck, userController.getUserProfile);
+router.get('/user/concerthalls', jwtCheck, userController.getUserConcerthallsData);
+router.get('/user/organization', jwtCheck, userController.getUserOrganizationData);
+router.get('/user/concerts', jwtCheck, userController.getUserConcertData);
 
 module.exports = router;

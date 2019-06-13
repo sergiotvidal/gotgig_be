@@ -1,9 +1,13 @@
 'use strict';
 
 const updateUserAvatar = require('./upload-avatar');
-const getUserProfile = require('./get-user');
+const getUserOrganizationData = require('./get-user-organization');
+const getUserConcerthallsData = require('./get-user-concerthalls');
+const getUserConcertData = require('./get-user-concerts');
 
 module.exports = {
   updateUserAvatar,
-  getUserProfile,
+  getUserOrganizationData,
+  getUserConcerthallsData,
+  getUserConcertData,
 };

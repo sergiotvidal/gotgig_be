@@ -52,6 +52,7 @@ async function createConcert(req, res) {
       id_band: idBand,
       date: concertData.date,
       hour: concertData.hour,
+      tickets: concertData.tickets,
     });
 
     connection.release();
