@@ -27,9 +27,9 @@ async function searchConcerthallsFromWelcome(req, res) {
   try {
     const { lat, lng } = await getCoordinatesFromGoogleMaps(location);
 
-    const { concerts } = req;
+    const { concerts } = req.concerts;
 
-    const searchQuery = `SELECT l.id_localhall, l.full_name, l.address, l.description, l.website, l.phone_number,
+    const searchQuery = `SELECT l.id_localhall, l.full_name, l.address, l.description, l.website, l.phone_number, l.lat, l.lng,
     (
         6371 * acos (
           cos ( radians(${lat}) )

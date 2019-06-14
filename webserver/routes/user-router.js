@@ -12,7 +12,5 @@ router.post('/user/avatar', jwtCheck, upload.single('avatar'), userController.up
 router.get('/user/organization', jwtCheck, userController.getUserOrganizationData);
 router.put('/user/organization', jwtCheck, userController.updateUserOrganization);
 router.delete('/user/organization', jwtCheck, userController.deleteUserOrganization);
-router.get('/user/concerthalls', jwtCheck, userController.getUserConcerthallsData);
-router.get('/user/concerts', jwtCheck, userController.getUserConcertData);
 
 module.exports = router;
