@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-param-reassign */
 /* eslint-disable security/detect-object-injection */
@@ -7,59 +8,34 @@
 
 const mySqlPool = require('../../../database/mysql-pool');
 
-async function getOrganizationId(uuid) {
-  const connection = await mySqlPool.getConnection();
-
-  const getOrganizationIdQuery = `SELECT id_organization FROM organizations WHERE uuid = '${uuid}'`;
-
-  const [organizationIdResult] = await connection.query(getOrganizationIdQuery);
-
-  const { id_organization: organizationId } = organizationIdResult[0];
-
-  return organizationId;
-}
-
 async function getConcertsData(req, res) {
   const { uuid } = req.claims;
 
   const connection = await mySqlPool.getConnection();
 
+  const getConcertsDataQuery = `SELECT c.id_localhall, c.date, c.hour, c.tickets, c.id_concert, b.full_name, b.style, b.description, b.website 
+  FROM localhalls l
+  LEFT JOIN organizations o ON o.id_organization = l.id_organization
+  RIGHT JOIN concerts c ON l.id_localhall = c.id_localhall
+  RIGHT JOIN bands b ON c.id_band = b.id_band
+  WHERE o.uuid = '${uuid}'
+  ORDER BY c.date`;
+
   try {
-    const organizationId = await getOrganizationId(uuid);
-    const getConcerthallsIdsQuery = `SELECT id_localhall FROM localhalls WHERE id_organization = '${organizationId}'`;
+    const [concertsData] = await connection.query(getConcertsDataQuery);
 
-    const [concerthallsIdsResult] = await connection.query(getConcerthallsIdsQuery);
+    const groupBy = key => array =>
+      array.reduce((objectsByKeyValue, obj) => {
+        const value = obj[key];
+        objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
+        return objectsByKeyValue;
+      }, {});
 
-    const concerthallsIds = concerthallsIdsResult.map(localhall => localhall.id_localhall);
+    const groupById = groupBy('id_localhall');
 
-    const concerthallsIdsFormattedForQuery = concerthallsIds.join(' OR ');
+    const concertsGroupedByLocalhallId = [groupById(concertsData)];
 
-    const getConcertsQuery = `SELECT * FROM concerts WHERE id_localhall = ${concerthallsIdsFormattedForQuery} ORDER BY date`;
-
-    const [getConcertsResult] = await connection.query(getConcertsQuery);
-
-    // const groupBy = key => array =>
-    //   array.reduce((objectsByKeyValue, obj) => {
-    //     const value = obj[key];
-    //     objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
-    //     return objectsByKeyValue;
-    //   }, {});
-
-    // const groupById = groupBy('id_localhall');
-
-    // const concertsGroupedByLocalhallId = [groupById(getConcertsResult)];
-
-
-    const bandIds = getConcertsResult.map(localhall => localhall.id_band).sort((a, b) => a > b).join(' OR ');
-    const getBandsQuery = `SELECT * FROM bands WHERE id_band = ${bandIds}`;
-    const [getBandsResult] = await connection.query(getBandsQuery);
-
-    const userConcertsAndBands = {
-      // me devuelven el objeto que quiero si les pongo [0]
-      getConcertsResult,
-      getBandsResult,
-    };
-    return res.status(200).send(userConcertsAndBands);
+    return res.status(200).send(concertsGroupedByLocalhallId);
   } catch (e) {
     if (connection) {
       connection.release();
