@@ -32,7 +32,7 @@ async function deleteUserOrganization(req, res) {
 
     connection.release();
 
-    return res.status(200).send(deleteConcertsQuery);
+    return res.status(200).send();
   } catch (e) {
     if (connection) {
       connection.release();
