@@ -54,6 +54,7 @@ app.use('/api', routers.accountRouter);
 app.use('/api', routers.concertRouter);
 app.use('/api', routers.concerthallRouter);
 app.use('/api', routers.userRouter);
+app.use('/api', routers.searchRouter);
 
 /**
  *  Port variable configured for deploy
