@@ -41,7 +41,7 @@ async function searchConcertsFromWelcome(req, res, next) {
     RIGHT JOIN concerts c ON l.id_localhall = c.id_localhall
     RIGHT JOIN bands b ON c.id_band = b.id_band
     HAVING distance < 10
-    ORDER BY distance, c.date`;
+    ORDER BY c.id_localhall, c.date`;
 
     const [concerts] = await connection.query(searchQuery);
 

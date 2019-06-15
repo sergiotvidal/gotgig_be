@@ -10,7 +10,7 @@ async function connect() {
     password: process.env.MYSQL_PASSWORD,
     database: process.env.MYSQL_DATABASE,
     port: process.env.MYSQL_PORT,
-    timezone: '+01:00',
+    timezone: 'Z',
     multipleStatements: true,
   };
 

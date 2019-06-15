@@ -52,7 +52,7 @@ async function updateConcertHall(req, res) {
     if (connection) {
       connection.release();
     }
-    return res.status(500).send();
+    return res.status(500).send(e.message);
   }
 }
 

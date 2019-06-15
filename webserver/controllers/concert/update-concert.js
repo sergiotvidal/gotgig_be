@@ -6,10 +6,9 @@ const updateBandData = require('../band/update-band-data');
 
 async function concertDataValidator(payload) {
   const schema = {
-    date: Joi.string(),
-    hour: Joi.string(),
+    date: Joi.number().required(),
     style: Joi.string(),
-    website: Joi.string(),
+    website: Joi.uri().string(),
     description: Joi.string(),
     tickets: Joi.string(),
   };
@@ -36,9 +35,11 @@ async function updateConcert(req, res) {
   const updateConcertQuery = `UPDATE concerts SET ? WHERE id_concert = '${idConcert}'`;
   const getBandIdQuery = `SELECT id_band FROM concerts WHERE id_concert = '${idConcert}'`;
 
+  const timeStampDate = new Date(concertData.date).getTime();
+
   try {
     await connection.query(updateConcertQuery, {
-      date: concertData.date,
+      date: timeStampDate,
       hour: concertData.hour,
       tickets: concertData.tickets,
     });

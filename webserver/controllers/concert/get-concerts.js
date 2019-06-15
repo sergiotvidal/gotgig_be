@@ -13,7 +13,7 @@ async function getConcertsData(req, res) {
 
   const connection = await mySqlPool.getConnection();
 
-  const getConcertsDataQuery = `SELECT c.id_localhall, c.date, c.hour, c.tickets, c.id_concert, b.full_name, b.style, b.description, b.website 
+  const getConcertsDataQuery = `SELECT c.id_localhall, c.date, c.tickets, c.id_concert, b.full_name, b.style, b.description, b.website 
   FROM localhalls l
   LEFT JOIN organizations o ON o.id_organization = l.id_organization
   RIGHT JOIN concerts c ON l.id_localhall = c.id_localhall
@@ -24,18 +24,18 @@ async function getConcertsData(req, res) {
   try {
     const [concertsData] = await connection.query(getConcertsDataQuery);
 
-    const groupBy = key => array =>
-      array.reduce((objectsByKeyValue, obj) => {
-        const value = obj[key];
-        objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
-        return objectsByKeyValue;
-      }, {});
+    // const groupBy = key => array =>
+    //   array.reduce((objectsByKeyValue, obj) => {
+    //     const value = obj[key];
+    //     objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
+    //     return objectsByKeyValue;
+    //   }, {});
 
-    const groupById = groupBy('id_localhall');
+    // const groupById = groupBy('id_localhall');
 
-    const concertsGroupedByLocalhallId = [groupById(concertsData)];
+    // const concertsGroupedByLocalhallId = [groupById(concertsData)];
 
-    return res.status(200).send(concertsGroupedByLocalhallId);
+    return res.status(200).send(concertsData);
   } catch (e) {
     if (connection) {
       connection.release();

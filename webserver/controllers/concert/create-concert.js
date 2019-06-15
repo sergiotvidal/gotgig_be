@@ -8,8 +8,7 @@ const getBandDataFromDatabase = require('../band/get-band-data-from-database');
 async function concertDataValidator(payload) {
   const schema = {
     band: Joi.string().required(),
-    date: Joi.required(),
-    hour: Joi.string().required(),
+    date: Joi.number().required(),
     tickets: Joi.string(),
     style: Joi.string(),
     website: Joi.string(),
@@ -47,11 +46,12 @@ async function createConcert(req, res) {
 
     const idBand = await getBandDataFromDatabase(concertData.band);
 
+    const timeStampDate = new Date(concertData.date).getTime();
+
     await connection.query(insertConcert, {
       id_localhall: idConcerthall,
       id_band: idBand,
-      date: concertData.date,
-      hour: concertData.hour,
+      date: timeStampDate,
       tickets: concertData.tickets,
     });
 
