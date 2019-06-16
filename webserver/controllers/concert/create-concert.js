@@ -46,12 +46,12 @@ async function createConcert(req, res) {
 
     const idBand = await getBandDataFromDatabase(concertData.band);
 
-    const timeStampDate = new Date(concertData.date).getTime();
+    // const timeStampDate = new Date(concertData.date).getTime();
 
     await connection.query(insertConcert, {
       id_localhall: idConcerthall,
       id_band: idBand,
-      date: timeStampDate,
+      date: concertData.date,
       tickets: concertData.tickets,
     });
 

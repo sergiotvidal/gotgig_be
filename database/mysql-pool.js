@@ -12,6 +12,7 @@ async function connect() {
     port: process.env.MYSQL_PORT,
     timezone: 'Z',
     multipleStatements: true,
+    debug: false,
   };
 
   /**
