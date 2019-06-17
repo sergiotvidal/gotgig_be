@@ -2,23 +2,28 @@
 
 const Joi = require('@hapi/joi');
 const mySqlPool = require('../../../database/mysql-pool');
-const updateBandData = require('../band/update-band-data');
 
 async function concertDataValidator(payload) {
   const schema = {
-    date: Joi.number().required(),
+    date: Joi.date().required(),
     style: Joi.string(),
     website: Joi.uri().string(),
     description: Joi.string(),
     tickets: Joi.string(),
   };
-    /**
-     * TODO: definir el formato de .date()
-     * ¿qué me traigo del front?
-     * ¿En qué formato me viene de front, en qué formato la convierto para almacenarla?
-     */
 
   return Joi.validate(payload, schema);
+}
+
+async function updateBandData(concertData) {
+  const connection = await mySqlPool.getConnection();
+  const updateBandDataQuery = `UPDATE bands SET ? WHERE id_band = '${concertData.idBand}'`;
+
+  await connection.query(updateBandDataQuery, {
+    style: concertData.style,
+    description: concertData.description,
+    website: concertData.website,
+  });
 }
 
 async function updateConcert(req, res) {

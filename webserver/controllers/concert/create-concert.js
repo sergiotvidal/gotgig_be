@@ -2,25 +2,41 @@
 
 const Joi = require('@hapi/joi');
 const mySqlPool = require('../../../database/mysql-pool');
-const insertBandIntoDatabase = require('../band/add-band-to-database');
-const getBandDataFromDatabase = require('../band/get-band-data-from-database');
 
 async function concertDataValidator(payload) {
   const schema = {
     band: Joi.string().required(),
-    date: Joi.number().required(),
+    date: Joi.date().required(),
     tickets: Joi.string(),
     style: Joi.string(),
     website: Joi.string(),
     description: Joi.string(),
   };
-  /**
-   * TODO: definir el formato de .date(),
-   * ¿qué me traigo del front?
-   * ¿En qué formato me viene de front, en qué formato la convierto para almacenarla?
-   */
 
   return Joi.validate(payload, schema);
+}
+
+async function insertBandIntoDatabase(concertData) {
+  const connection = await mySqlPool.getConnection();
+  const createBandQuery = 'INSERT INTO bands SET ?';
+
+  await connection.query(createBandQuery, {
+    full_name: concertData.band,
+    style: concertData.style,
+    description: concertData.description,
+    website: concertData.website,
+  });
+}
+
+async function getBandDataFromDatabase(band) {
+  const connection = await mySqlPool.getConnection();
+  const getBandDataQuery = `SELECT id_band FROM bands WHERE full_name = '${band}'`;
+
+  const [bandData] = await connection.query(getBandDataQuery);
+
+  const idBand = bandData[0].id_band;
+
+  return idBand;
 }
 
 async function createConcert(req, res) {
@@ -34,7 +50,7 @@ async function createConcert(req, res) {
   }
 
   const connection = await mySqlPool.getConnection();
-  const insertConcert = 'INSERT INTO concerts SET ?';
+  const insertConcertQuery = 'INSERT INTO concerts SET ?';
   const isBandAlreadyInDatabaseQuery = `SELECT * FROM bands WHERE full_name = '${concertData.band}'`;
 
   try {
@@ -46,9 +62,14 @@ async function createConcert(req, res) {
 
     const idBand = await getBandDataFromDatabase(concertData.band);
 
-    // const timeStampDate = new Date(concertData.date).getTime();
+    /**
+     TODO: Hacer if para comprobar que los id_localhall están asociados al id_organization
+     y te deje hacer el insert
+     *
+     * Check de que si al crear concierto ya existe un id_banda y date iguales, no te deje
+     */
 
-    await connection.query(insertConcert, {
+    await connection.query(insertConcertQuery, {
       id_localhall: idConcerthall,
       id_band: idBand,
       date: concertData.date,

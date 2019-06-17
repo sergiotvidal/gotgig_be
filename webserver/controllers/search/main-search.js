@@ -34,7 +34,7 @@ async function mainSearchController(req, res) {
     try {
       const { lat: googleLat, lng: googleLng } = await getCoordinatesFromGoogleMaps(location);
 
-      const getDataQuery = `SELECT c.id_localhall, c.date, c.hour, c.tickets, b.full_name, b.style, b.description, b.website,
+      const getDataQuery = `SELECT c.id_localhall, c.date, c.tickets, b.full_name, b.style, b.description, b.website,
       l.id_localhall, l.full_name, l.address, l.description, l.website, l.phone_number, l.lat, l.lng,
     (
         6371 * acos (
@@ -66,8 +66,7 @@ async function mainSearchController(req, res) {
     try {
       const { lat: googleLat, lng: googleLng } = await getCoordinatesFromGoogleMaps(location);
 
-      const getDataQuery = `SELECT c.id_localhall, c.date, c.hour, c.tickets, b.full_name, b.style, b.description, b.website,
-        l.id_localhall, l.full_name, l.address, l.description, l.website, l.phone_number, l.lat, l.lng,
+      const getConcerthallsDataQuery = `SELECT l.id_localhall, l.full_name, l.address, l.description, l.website, l.phone_number, l.lat, l.lng,
       (
           6371 * acos (
             cos ( radians(${googleLat}) )
@@ -78,12 +77,37 @@ async function mainSearchController(req, res) {
           )
         ) AS distance
       FROM localhalls l
-      RIGHT JOIN concerts c ON l.id_localhall = c.id_localhall
-      RIGHT JOIN bands b ON c.id_band = b.id_band
       HAVING distance < 5
-      ORDER BY c.id_localhall, distance, c.date`;
+      ORDER BY distance`;
 
-      const [resultData] = await connection.query(getDataQuery);
+      const [concerthallsData] = await connection.query(getConcerthallsDataQuery);
+
+      const getConcertsDataQuery = `SELECT c.id_localhall, c.date, c.tickets, b.full_name AS band, b.style, b.description, b.website,
+    (
+        6371 * acos (
+          cos ( radians(${googleLat}) )
+          * cos( radians( lat ) )
+          * cos( radians( lng ) - radians(${googleLng}) )
+          + sin ( radians(${googleLat}) )
+          * sin( radians( lat ) )
+        )
+      ) AS distance
+    FROM localhalls l
+    RIGHT JOIN concerts c ON l.id_localhall = c.id_localhall
+    RIGHT JOIN bands b ON c.id_band = b.id_band
+    HAVING distance < 5
+    ORDER BY c.id_localhall, c.date`;
+
+      const [concertsData] = await connection.query(getConcertsDataQuery);
+
+      const resultData = {
+        concerthallsData,
+        concertsData,
+        coordinates: {
+          googleLat,
+          googleLng,
+        },
+      };
 
       return res.status(200).send(resultData);
     } catch (e) {
@@ -94,7 +118,7 @@ async function mainSearchController(req, res) {
     }
   }
   try {
-    const getDataQuery = `SELECT c.id_localhall, c.date, c.hour, c.tickets, b.full_name, b.style, b.description, b.website,
+    const getDataQuery = `SELECT c.id_localhall, c.date, c.tickets, b.full_name, b.style, b.description, b.website,
     l.id_localhall, l.full_name, l.address, l.description, l.website, l.phone_number, l.lat, l.lng,
   (
       6371 * acos (
