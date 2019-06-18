@@ -62,13 +62,6 @@ async function createConcert(req, res) {
 
     const idBand = await getBandDataFromDatabase(concertData.band);
 
-    /**
-     TODO: Hacer if para comprobar que los id_localhall están asociados al id_organization
-     y te deje hacer el insert
-     *
-     * Check de que si al crear concierto ya existe un id_banda y date iguales, no te deje
-     */
-
     await connection.query(insertConcertQuery, {
       id_localhall: idConcerthall,
       id_band: idBand,
