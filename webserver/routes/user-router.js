@@ -9,7 +9,7 @@ const router = express.Router();
 const upload = multer();
 
 router.post('/user/avatar', jwtCheck, upload.single('avatar'), userController.uploadUserAvatar);
-router.get('/user/organization', jwtCheck, userController.getUserOrganizationData);
+router.get('/user/organization', jwtCheck, userController.getUserData);
 router.put('/user/organization', jwtCheck, userController.updateUserOrganization);
 router.delete('/user/organization', jwtCheck, userController.deleteUserOrganization);
 
