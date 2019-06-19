@@ -68,8 +68,8 @@ async function mainSearchController(req, res) {
         concerthallsData,
         concertsData,
         coordinates: {
-          googleLat,
-          googleLng,
+          lat: googleLat,
+          lng: googleLng,
         },
       };
 
