@@ -31,7 +31,7 @@ async function addVerificationCode(uuid) {
 }
 
 async function registrationEmailSender(userEmail, verificationCode) {
-  const activationURL = `http://localhost:3005/api/account/activate?verification_code=${verificationCode}`;
+  const activationURL = `${process.env.API_BASE_URL}/account/activate?verification_code=${verificationCode}`;
   const msg = {
     to: userEmail,
     from: {
