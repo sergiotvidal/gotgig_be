@@ -24,7 +24,6 @@ async function getConcertsData(req, res) {
   try {
     const [concertsData] = await connection.query(getConcertsDataQuery);
 
-    
     return res.status(200).send(concertsData);
   } catch (e) {
     if (connection) {
