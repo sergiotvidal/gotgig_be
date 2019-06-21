@@ -7,10 +7,10 @@ async function concertDataValidator(payload) {
   const schema = {
     band: Joi.string().required(),
     date: Joi.date().required(),
-    tickets: Joi.string(),
-    style: Joi.string(),
-    website: Joi.string(),
-    description: Joi.string(),
+    tickets: Joi.string().allow('').optional(),
+    style: Joi.string().allow('').optional(),
+    website: Joi.string().allow('').optional(),
+    description: Joi.string().allow('').optional(),
   };
 
   return Joi.validate(payload, schema);
