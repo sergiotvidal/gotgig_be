@@ -24,6 +24,8 @@ async function getConcertsData(req, res) {
   try {
     const [concertsData] = await connection.query(getConcertsDataQuery);
 
+    connection.release();
+
     return res.status(200).send(concertsData);
   } catch (e) {
     if (connection) {
@@ -34,14 +36,3 @@ async function getConcertsData(req, res) {
 }
 
 module.exports = getConcertsData;
-
-// const groupBy = key => array =>
-//   array.reduce((objectsByKeyValue, obj) => {
-//     const value = obj[key];
-//     objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
-//     return objectsByKeyValue;
-//   }, {});
-
-// const groupById = groupBy('id_localhall');
-
-// const concertsGroupedByLocalhallId = [groupById(concertsData)];

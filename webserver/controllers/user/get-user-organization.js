@@ -33,6 +33,8 @@ async function getUserData(req, res) {
       concertsData,
     };
 
+    connection.release();
+
     res.status(200).send(userData);
   } catch (e) {
     if (connection) {

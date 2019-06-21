@@ -49,6 +49,7 @@ async function uploadUserAvatar(req, res) {
       return res.status(500).send(e.message);
     }
 
+    connection.release();
     res.header('Location', secureUrl);
     res.status(201).send();
   }).end(file.buffer);

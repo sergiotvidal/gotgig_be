@@ -21,9 +21,9 @@ async function loginUser(req, res) {
   } catch (e) {
     return res.status(400).send(e.message);
   }
+  const connection = await mySqlPool.getConnection();
 
   try {
-    const connection = await mySqlPool.getConnection();
     const getUserInfoQuery = `SELECT
       id_organization, uuid, email, password, verified_at
       FROM organizations
@@ -57,11 +57,17 @@ async function loginUser(req, res) {
         accessToken,
         expiresIn: jwtExpirationTime,
       };
+
+      connection.release();
+
       return res.status(200).send(response);
     }
 
     return res.status(404).send();
   } catch (e) {
+    if (connection) {
+      connection.release();
+    }
     return res.status(500).send(e.message);
   }
 }

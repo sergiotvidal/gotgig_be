@@ -24,6 +24,8 @@ async function getConcertHallsData(req, res) {
     const getConcertHallsDataQuery = `SELECT address, description, website, full_name, phone_number, id_localhall FROM localhalls WHERE id_organization = '${idOrganization}'`;
     const [concertHallsData] = await connection.query(getConcertHallsDataQuery);
 
+    connection.release();
+
     return res.status(200).send(concertHallsData);
   } catch (e) {
     if (connection) {

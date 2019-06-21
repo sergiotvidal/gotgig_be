@@ -73,6 +73,8 @@ async function mainSearchController(req, res) {
         },
       };
 
+      connection.release();
+
       return res.status(200).send(resultData);
     } catch (e) {
       if (connection) {
@@ -125,6 +127,8 @@ async function mainSearchController(req, res) {
         lng,
       },
     };
+
+    connection.release();
 
     return res.status(200).send(resultData);
   } catch (e) {
