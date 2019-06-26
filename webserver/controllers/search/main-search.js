@@ -59,7 +59,7 @@ async function mainSearchController(req, res) {
     FROM localhalls l
     RIGHT JOIN concerts c ON l.id_localhall = c.id_localhall
     RIGHT JOIN bands b ON c.id_band = b.id_band
-    HAVING distance < 5
+    HAVING distance < 5 AND c.date > NOW()
     ORDER BY c.id_localhall, c.date`;
 
       const [concertsData] = await connection.query(getConcertsDataQuery);
@@ -114,7 +114,7 @@ async function mainSearchController(req, res) {
     FROM localhalls l
     RIGHT JOIN concerts c ON l.id_localhall = c.id_localhall
     RIGHT JOIN bands b ON c.id_band = b.id_band
-    HAVING distance < 5
+    HAVING distance < 5 AND c.date > NOW()
     ORDER BY c.id_localhall, c.date`;
 
     const [concertsData] = await connection.query(getConcertsDataQuery);
