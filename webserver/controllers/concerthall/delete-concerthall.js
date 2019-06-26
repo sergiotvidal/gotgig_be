@@ -11,7 +11,7 @@ async function deleteConcerthall(req, res) {
     await connection.query(deleteConcertsQuery);
     await connection.query(deleteConcerthallQuery);
     connection.release();
-    return res.status(200).redirect('/user');
+    return res.status(200).send();
   } catch (e) {
     if (connection) {
       connection.release();
