@@ -15,7 +15,7 @@ async function activateAccount(req, res) {
 
     connection.release();
 
-    return res.status(302).redirect('/login');
+    return res.status(302).redirect(`${process.env.FRONTEND_URL}/login`);
   } catch (e) {
     if (connection) {
       connection.release();

@@ -82,13 +82,13 @@ async function createAccount(req, res) {
       created_at: creationDateFormatted,
       full_name: accountData.full_name,
     });
-    
+
     const verificationCode = await addVerificationCode(uuid);
-    
+
     await registrationEmailSender(accountData.email, verificationCode);
-    
+
     connection.release();
-    
+
     return res.status(201).send(result);
   } catch (e) {
     if (connection) {
