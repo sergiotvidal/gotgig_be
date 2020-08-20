@@ -14,7 +14,7 @@
     "@hapi/joi": "^15.0.3",
     "@sendgrid/mail": "^6.3.1",
     "axios": "^0.19.0",
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "cloudinary": "^1.14.0",
     "dotenv": "^8.0.0",
